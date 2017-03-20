@@ -1,4 +1,6 @@
 
+var pressedKeys = [];
+var msgTypes = require('../common/message-types');
 function Game(mountPoint, width, height, bgColor){
     // Object Properties
     this.canvas = document.createElement('canvas');
@@ -8,8 +10,19 @@ function Game(mountPoint, width, height, bgColor){
     this.bgColor = bgColor;
     this.objects = [];
     this.start = null;
+    this.ws = new WebSocket('ws://localhost:3000');
     var self = this;
+
+    ws.addEventListener('open', function(event){
+        console.log("Clent connected.");
+    })
     // Object Functions
+    this.sendInput = function(){
+        ws.send(JSON.stringify({
+            type: msgTypes.client.INPUT,
+            data: pressedKeys
+        }));
+    }
     this.clearCanvas = function(){
         self.context.fillStyle = self.bgColor;
         self.context.fillRect(0, 0, self.canvas.width, self.canvas.height)
@@ -26,6 +39,8 @@ function Game(mountPoint, width, height, bgColor){
     this.run = function(timestamp){
         if(!self.start) self.start = timestamp;
         if((timestamp - self.start) >= 16){
+            self.sendInput(pressedKeys);
+            pressedKeys = [];
             self.render();
             self.start = timestamp;
         }
@@ -33,6 +48,9 @@ function Game(mountPoint, width, height, bgColor){
     }
     // Setup Actions
     document.getElementById(mountPoint).appendChild(this.canvas);
+    window.addEventListener('keydown', function(event){
+        pressedKeys.push(event.key);
+    })
 }
 
 function Rectangle(x, y, width, height, color){

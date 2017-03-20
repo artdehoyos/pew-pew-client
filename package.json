@@ -4,11 +4,15 @@
   "description": "The client for a multiplayer space shooter game",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack"
   },
   "author": "Art deHoyos",
   "license": "ISC",
   "devDependencies": {
-    "express": "^4.15.2"
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.0",
+    "babel-preset-env": "^1.2.1",
+    "express": "^4.15.2",
+    "webpack": "^2.2.1"
   }
 }
